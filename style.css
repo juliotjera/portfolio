@@ -1,0 +1,653 @@
+:root {
+  --paper: #f6f6fb;
+  --paper-raised: #ffffff;
+  --ink: #171b34;
+  --ink-soft: #5c6178;
+  --line: #dfe1ef;
+  --line-soft: #ececf6;
+  --accent: #3457ff;
+  --accent-soft: #eaeeff;
+  /* bleu des boutons — accordé au cercle du hero.
+     Teinte choisie pour que le texte blanc reste lisible (contraste ≥ 4.5:1). */
+  --accent-btn: #4172b6;
+  --accent-btn-dark: #35619d;
+  --btn-fg: #ffffff;
+  --white: #ffffff;
+  --romaji: #8d99b4;
+  --intro-fg: #4a5163;
+  --ok: #1a9b6c;
+  /* surface inversée (logo, badge photo, pied de page) */
+  --invert-bg: #171b34;
+  --invert-fg: #ffffff;
+  /* base des pastilles d'icônes et des vignettes de projet */
+  --tile-base: #ffffff;
+  --mock-1: linear-gradient(135deg, #dfe6ff, #f3f5ff);
+  --mock-2: linear-gradient(135deg, #ffe4e4, #fff3f3);
+  --mock-3: linear-gradient(135deg, #dff5e6, #f2fbf5);
+  /* Photo de profil.
+     Mode actuel : photo NON détourée, recadrée en rond dans les cercles.
+     Pour passer au rendu du template (tête qui dépasse du cercle), il faut
+     une image détourée en PNG : remplacer par url("photo.png") et remettre
+     la classe `is-cutout` sur les deux cercles dans index.html. */
+  /* photo détourée (fond transparent) — générée depuis pdp.jpeg */
+  --photo: url("photo.png");
+  --photo-position: center bottom;
+
+  /* visuels dépendant du thème */
+  --bg-hero: url("background-1.webp");
+  --bg-section: url("background-2.webp");
+  --img-leaf: url("leaf.png");
+  --img-tile: url("pattern-tile-light.png");
+  --section-pattern-opacity: .25;
+
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Plus Jakarta Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  /* marge intérieure simple : le centrage est déjà assuré par max-width + margin auto */
+  --edge: 64px;
+}
+
+/* ---------- mode sombre ----------
+   Seules les variables changent : le reste de la feuille de style les utilise,
+   donc rien d'autre n'est à dupliquer. Les visuels ont leur version inversée
+   (luminosité inversée, teintes conservées — le papillon reste bleu). */
+[data-theme="dark"] {
+  --paper: #0f1118;
+  --paper-raised: #191d28;
+  --ink: #eceef6;
+  --ink-soft: #a0a8c0;
+  --line: #2b3143;
+  --line-soft: #222736;
+  --accent: #7f9dff;
+  --accent-soft: #1e2440;
+  /* sur fond sombre : bleu clair + texte foncé, sinon le contraste chute a 3.5 */
+  --accent-btn: #8fb6ea;
+  --accent-btn-dark: #a6c6f0;
+  --btn-fg: #0f1118;
+  --romaji: #6f7a99;
+  --intro-fg: #b6bdd2;
+  --ok: #3ecf9b;
+  --invert-bg: #eceef6;
+  --invert-fg: #0f1118;
+  --tile-base: #191d28;
+  --mock-1: linear-gradient(135deg, #202742, #171b28);
+  --mock-2: linear-gradient(135deg, #35222a, #201820);
+  --mock-3: linear-gradient(135deg, #172b25, #14201d);
+  --bg-hero: url("background-1-dark.webp");
+  --bg-section: url("background-2-dark.webp");
+  --img-leaf: url("leaf-dark.png");
+  --img-tile: url("pattern-tile-dark.png");
+  --section-pattern-opacity: .35;
+  color-scheme: dark;
+}
+
+/* ---------- bascule clair / sombre : transition ----------
+   1) Navigateurs récents : View Transitions. C'est le seul moyen de faire
+      un fondu sur les IMAGES (fonds, feuilles, photo) — une transition CSS
+      ne sait pas interpoler entre deux `background-image`.
+   2) Repli (Firefox…) : la classe .theme-switching pose une transition sur
+      les couleurs, le temps de la bascule uniquement. Elle est retirée
+      juste après, sinon chaque survol du site traînerait. */
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: background-color .45s ease, color .45s ease,
+              border-color .45s ease, fill .45s ease,
+              stroke .45s ease, box-shadow .45s ease !important;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button, input, select, textarea { font-family: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.skip-link {
+  position: absolute; left: 12px; top: -60px; z-index: 100;
+  background: var(--invert-bg); color: var(--invert-fg); padding: 10px 18px; border-radius: 8px;
+  font-family: var(--font-mono); font-size: 13px; transition: top .2s;
+}
+.skip-link:focus { top: 12px; }
+
+/* ---------- header ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line-soft);
+}
+.header-inner {
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: 1400px; margin: 0 auto; padding: 16px var(--edge);
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-box {
+  display: block; font: 800 12px/1.15 var(--font-display); letter-spacing: .5px;
+  background: var(--invert-bg); color: var(--invert-fg); padding: 6px 9px; border-radius: 6px;
+}
+.logo-sub { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; color: var(--ink-soft); }
+
+nav[aria-label="Navigation principale"] { display: flex; gap: 30px; font-family: var(--font-mono); font-size: 13px; }
+nav a { display: flex; align-items: center; gap: 7px; color: var(--ink-soft); transition: color .18s; }
+nav a:hover, nav a:focus-visible { color: var(--ink); }
+.nav-tag { color: var(--accent); font-size: 11px; }
+
+.header-actions { display: flex; align-items: center; gap: 10px; }
+
+/* bouton clair / sombre — n'affiche que l'icône de la cible :
+   soleil quand on est en sombre, lune quand on est en clair */
+.theme-toggle {
+  position: relative; display: grid; place-items: center;
+  width: 40px; height: 40px; padding: 0;
+  background: none; border: 1px solid var(--line); border-radius: 50%;
+  color: var(--ink-soft); cursor: pointer; overflow: hidden;
+  transition: color .25s ease, border-color .25s ease, background-color .25s ease;
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink-soft); background-color: color-mix(in srgb, var(--ink) 6%, transparent); }
+.theme-toggle:active { transform: scale(.92); }
+
+/* halo qui se propage au clic */
+.theme-toggle::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: currentColor; opacity: 0; transform: scale(.2);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.theme-toggle:active::before { opacity: .14; transform: scale(1); transition-duration: .15s; }
+
+/* Les deux icônes sont superposées et toujours présentes (pas de display:none,
+   sinon rien ne peut s'animer). Seule celle du thème cible est visible. */
+.theme-toggle svg {
+  grid-area: 1 / 1; width: 18px; height: 18px;
+  fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round;
+  transition: opacity .3s ease, transform .5s cubic-bezier(.5, -0.3, .3, 1.3);
+}
+.icon-sun  { opacity: 0; transform: rotate(-120deg) scale(.3); }
+.icon-moon { opacity: 1; transform: rotate(0) scale(1); }
+[data-theme="dark"] .icon-sun  { opacity: 1; transform: rotate(0) scale(1); }
+[data-theme="dark"] .icon-moon { opacity: 0; transform: rotate(120deg) scale(.3); }
+
+.nav-toggle { display: none; flex-direction: column; justify-content: center; gap: 4px; width: 44px; height: 44px; background: none; border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
+.nav-toggle span { display: block; height: 1.5px; width: 16px; margin: 0 auto; background: var(--ink); transition: transform .25s, opacity .2s; }
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+/* ---------- shared layout ---------- */
+.hero, .section { position: relative; overflow-x: clip; }
+.section-inner {
+  max-width: 1400px; margin: 0 auto; padding-left: var(--edge); padding-right: var(--edge);
+}
+.eyebrow-jp { margin: 0; color: var(--line); font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 4px; }
+.eyebrow-jp.small { font-size: 13px; margin-bottom: -6px; }
+.eyebrow-jp.hero-jp { font-size: 15px; font-weight: 700; color: var(--ink-soft); letter-spacing: 3px; margin-bottom: 4px; }
+.eyebrow { display: flex; align-items: center; gap: 8px; margin: 6px 0 14px; color: var(--accent); font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 1.6px; text-transform: uppercase; }
+.eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 800; margin: 0; }
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0) scale(.98);
+  transition: opacity 1.2s cubic-bezier(.16, 1, .3, 1), transform 1.2s cubic-bezier(.16, 1, .3, 1), filter 1.2s ease;
+  filter: blur(4px);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+
+.reveal.from-left { transform: translate3d(-40px, 0, 0) scale(.98); }
+.reveal.from-right { transform: translate3d(40px, 0, 0) scale(.98); }
+.reveal.from-top { transform: translate3d(0, -30px, 0) scale(.98); }
+.reveal.from-bottom { transform: translate3d(0, 30px, 0) scale(.98); }
+
+.reveal.from-left.is-visible,
+.reveal.from-right.is-visible,
+.reveal.from-top.is-visible,
+.reveal.from-bottom.is-visible {
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* ---------- hero ---------- */
+.hero {
+  min-height: 92vh; display: flex; align-items: center;
+  padding-top: 40px; padding-bottom: 60px; overflow: hidden;
+}
+.hero-inner {
+  position: relative; width: 100%; max-width: 1400px; margin: 0 auto;
+  padding-left: var(--edge); padding-right: var(--edge);
+  display: grid; grid-template-columns: 1.05fr .95fr auto;
+  align-items: center; gap: 20px;
+}
+/* fonds décoratifs (images) — pleine largeur de fenêtre, sous le contenu */
+.hero-waves {
+  position: absolute; top: 0; bottom: 0; height: 100%; left: 50%; width: 100vw;
+  transform: translateX(-50%); z-index: -1; pointer-events: none;
+  background-repeat: no-repeat; background-position: center; background-size: cover;
+}
+.hero .hero-waves { background-image: var(--bg-hero); }
+/* Sections 3 et 5 : background-2.webp fait 1920x1000, soit exactement 10 périodes
+   du motif en hauteur — il se répète donc verticalement sans ligne de coupure.
+   (L'ancienne version faisait 1080 px = 10,8 périodes : les arcs repartaient
+   décalés à chaque répétition, d'où le raccord visible.)
+   `100% auto` reproduit l'échelle de la page 1, qui affiche aussi son visuel
+   de 1920 px sur toute la largeur. */
+.skills .hero-waves,
+.contact .hero-waves {
+  background-image: var(--bg-section);
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+  background-position: center top;
+  opacity: var(--section-pattern-opacity);
+}
+
+/* le texte s'arrête avant le cercle centré, quelle que soit la largeur d'écran */
+.hero-copy { max-width: min(360px, 24vw); }
+/* calibré pour que « JULIOT » (le mot le plus long) tienne dans .hero-copy
+   à toutes les largeurs : largeur du mot ≈ 3,3 × la taille de police */
+h1 { font-size: clamp(44px, 7vw, 106px); line-height: .92; letter-spacing: -1px; }
+
+/* Textes du hero — police display en gras et fort contraste, comme le template.
+   (Ils étaient auparavant en mono, fins et gris clair : trop effacés.) */
+.hero-romaji {
+  margin: 0 0 2px; font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(20px, 2.1vw, 32px); letter-spacing: 1px;
+  color: var(--romaji); text-transform: uppercase;
+}
+.role {
+  margin: 12px 0 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(11px, .85vw, 13.5px); letter-spacing: 1.6px;
+  color: var(--ink); text-transform: uppercase;
+}
+.intro { max-width: 440px; margin: 22px 0 30px; color: var(--intro-fg); font-size: 16px; line-height: 1.65; font-style: italic; }
+
+.scroll-cue {
+  display: block; width: 18px; margin: 0 0 24px; color: var(--ink);
+  font-size: 20px; line-height: .6; text-align: center; opacity: 1;
+  font-weight: 900;
+  animation: bob 1.8s ease-in-out infinite;
+}
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+.hero-actions { position: relative; display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+.button { display: inline-flex; align-items: center; gap: 8px; border-radius: 100px; padding: 14px 24px; font-family: var(--font-body); font-size: 14px; font-weight: 700; transition: transform .2s, background .2s, box-shadow .2s; border: none; cursor: pointer; }
+.button:hover { transform: translateY(-2px); }
+/* Bouton principal : bleu plein, dans la teinte du cercle (le template n'utilise
+   pas le bleu marine foncé). Bouton secondaire : blanc plein à fine bordure,
+   et non transparent à bordure épaisse. */
+.primary { background: var(--accent-btn); color: var(--btn-fg); box-shadow: 0 10px 20px -12px rgba(40, 80, 150, .85); }
+.primary:hover { background: var(--accent-btn-dark); box-shadow: 0 14px 26px -12px rgba(40, 80, 150, .95); }
+.ghost { background: var(--paper-raised); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 8px 18px -14px rgba(23, 27, 52, .55); }
+.ghost:hover { border-color: var(--accent-btn); color: var(--accent-btn-dark); }
+.button.full { width: 100%; justify-content: center; }
+
+/* ---------- zone illustration / photo ----------
+   Le cercle est en CSS (et non dans l'image de fond) pour qu'il reste toujours
+   aligné avec cette colonne, et donc avec la photo qui viendra dedans. */
+.hero-art { position: relative; display: grid; place-items: center; height: 380px; color: var(--ink); }
+/* centré sur la section, derrière le texte (comme dans le visuel d'origine) */
+.hero-circle {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  z-index: -1;
+  width: min(470px, 32vw); aspect-ratio: 1; border-radius: 50%;
+  background: linear-gradient(150deg, #afc9e2 0%, #93b5d6 22%, #7da4ca 50%, #4a719d 100%);
+  box-shadow: 0 30px 50px -30px rgba(35, 60, 95, .55);
+}
+
+/* --- Photo dans les cercles ---------------------------------------------
+   La photo est appelée via la variable --photo : tant que le fichier
+   n'existe pas, on ne voit que le cercle bleu (aucune image cassée).
+   Deux rendus possibles :
+   • par défaut : photo recadrée EN ROND dans le cercle — marche avec
+     n'importe quelle photo ;
+   • avec la classe `is-cutout` sur .hero-circle : la photo déborde du
+     cercle comme dans le template. À réserver à une image DÉTOURÉE
+     (fond transparent), sinon un rectangle dépasserait du cercle. */
+.hero-circle::after,
+.photo-circle::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: var(--photo, none) var(--photo-position, center) / cover no-repeat;
+}
+
+.hero-circle::after {
+  background-size: 100%;
+}
+/* PAGE 1 — la photo passe PAR-DESSUS le cercle bleu, qui reste visible
+   derrière elle, et la tête dépasse en haut (comme dans le template).
+   Le ::after se peint après le fond de l'élément : la photo est donc
+   au-dessus du cercle sans changer le z-index. */
+.hero-circle.is-cutout { overflow: visible; }
+.hero-circle.is-cutout::after {
+  inset: -30% -4% -2%;
+  border-radius: 0;
+  background-size: contain;
+  background-position: center bottom;
+  /* la photo d'origine s'arrête à la poitrine : on estompe le bas
+     pour éviter une coupure nette en plein milieu du buste */
+  mask-image: linear-gradient(to bottom, black 78%, transparent 97%);
+}
+
+/* PAGE 2 — la photo est DANS le cercle : le rond découpe l'image, et le
+   bleu reste visible tout autour du sujet. */
+.photo-circle::after {
+  background-size: 104%;
+  background-position: center bottom;
+}
+/* feuilles flottantes — visuel : leaf.png (fond transparent)
+   --rot = inclinaison de base, l'animation ajoute le balancement */
+.leaf {
+  position: absolute; --rot: 0deg; --h: 70px;
+  --drift-x: 0px; --drift-y: 0px; --sway: 0deg;
+  --leaf-blur: 2px;
+  width: calc(var(--h) / 3.2); height: var(--h);
+  background: var(--img-leaf) center / contain no-repeat;
+  opacity: 0; filter: blur(var(--leaf-blur)); pointer-events: none;
+  animation: none;
+}
+
+.leaf.is-visible {
+  animation: leaf-entry 1.45s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+
+.leaf.is-floating {
+  animation: drift 7s ease-in-out infinite;
+}
+
+.reveal.leaf.leaf-1 { opacity: 1; --leaf-blur: 3px; }
+.reveal.leaf.leaf-2 { opacity: .9; --leaf-blur: 3px; }
+.reveal.leaf.leaf-3 { opacity: .8; --leaf-blur: 3px; }
+.reveal.leaf.leaf-4 { opacity: .9; --leaf-blur: 3px; }
+.reveal.leaf.leaf-5 { opacity: .7; --leaf-blur: 0px; }
+.reveal.leaf.leaf-6 { opacity: .8; --leaf-blur: 0px; }
+.reveal.leaf.leaf-7 { opacity: .9; --leaf-blur: .5px; }
+
+.reveal.leaf.leaf-1,
+.reveal.leaf.leaf-2,
+.reveal.leaf.leaf-3,
+.reveal.leaf.leaf-4,
+.reveal.leaf.leaf-5,
+.reveal.leaf.leaf-6,
+.reveal.leaf.leaf-7 {
+  filter: blur(var(--leaf-blur));
+}
+
+.leaf-1 { top: -5%; left: 40%; --h: 170px; --rot: 18deg; --drift-x: -18px; --drift-y: -12px; --sway: 12deg; }
+.leaf-2 { top: -5%; left: 55%; --h: 150px; --rot: -30deg; --drift-x: 18px; --drift-y: -10px; --sway: -12deg; }
+.leaf-3 { top: 90%; left: 30%; --h: 150px; --rot: -40deg; --drift-x: -14px; --drift-y: 12px; --sway: -10deg; }
+.leaf-4 { top: 85%; left: 65%; --h: 150px; --rot: 20deg; --drift-x: 14px; --drift-y: 10px; --sway: 10deg; }
+.leaf-5 { top: 15%; right: 65%; --h: 75px; --rot: 60deg; --drift-x: -12px; --drift-y: -6px; --sway: 9deg; }
+.leaf-6 { top: 75%; right: 5%; --h: 60px; --rot: -50deg; --drift-x: 14px; --drift-y: 8px; --sway: -9deg; }
+.leaf-7 { top: 60%; right: 30%; --h: 100px; --rot: 50deg; --drift-x: 12px; --drift-y: -8px; --sway: 8deg; }
+
+@keyframes drift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(var(--rot));
+  }
+  50% {
+    transform: translate3d(var(--drift-x), var(--drift-y), 0) rotate(calc(var(--rot) + var(--sway)));
+  }
+}
+
+@keyframes leaf-entry {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--entry-x), var(--entry-y), 0) rotate(calc(var(--rot) - 14deg));
+    filter: blur(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(var(--rot));
+    filter: blur(var(--leaf-blur));
+  }
+}
+
+.leaf.from-left { --entry-x: -80px; --entry-y: 12px; }
+.leaf.from-right { --entry-x: 80px; --entry-y: -12px; }
+.leaf.from-top { --entry-x: 12px; --entry-y: -80px; }
+.leaf.from-bottom { --entry-x: -12px; --entry-y: 80px; }
+
+.hero-side { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; text-align: right; }
+.badge-open { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin: 0 0 6px; font-family: var(--font-display); font-weight: 800; font-size: clamp(11px, .95vw, 15px); letter-spacing: 2px; color: var(--ink); white-space: nowrap; text-transform: uppercase; }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+.hero-year { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(40px, 4.6vw, 68px); line-height: .95; letter-spacing: -1px; color: var(--ink); }
+.hero-loc { margin: 2px 0 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(13px, 1.15vw, 19px); letter-spacing: 2px; color: var(--ink); text-transform: uppercase; }
+
+/* ---------- about ---------- */
+.about { padding-top: 90px; }
+.about h2 { font-size: clamp(30px, 3.6vw, 46px); letter-spacing: -.5px; margin-bottom: 40px; }
+.about-grid { display: grid; grid-template-columns: .55fr 1.45fr; gap: 60px; align-items: start; }
+.about-photo { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.photo-wrap { position: relative; display: inline-block; }
+.photo-circle {
+  position: relative;                /* ancre le ::after qui porte la photo */
+  width: 220px; height: 220px; border-radius: 50%;
+  /* même bleu que le cercle du hero, comme dans le template */
+  background: linear-gradient(150deg, #afc9e2 0%, #93b5d6 22%, #7da4ca 50%, #4a719d 100%);
+  display: grid; place-items: center; font: 800 88px var(--font-display); color: var(--white);
+}
+.photo-badge {
+  position: absolute; left: 50%; bottom: -12px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px; margin: 0; padding: 8px 16px; border-radius: 100px;
+  background: var(--invert-bg); color: var(--invert-fg); font-family: var(--font-mono); font-size: 10.5px;
+  text-align: center; white-space: nowrap; box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.about-text p { margin: 0 0 16px; color: var(--ink-soft); font-size: 16px; line-height: 1.7; }
+.about-text p:last-of-type { margin-bottom: 0; }
+
+.info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 32px 0; padding: 24px; background: var(--paper-raised); border: 1px solid var(--line); border-radius: 14px; }
+.info-grid div { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: 14.5px; }
+.info-grid span { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 1px; color: var(--ink-soft); font-weight: 400; }
+.info-grid em { color: var(--ok); font-style: normal; }
+
+/* ---------- skills ---------- */
+.skills { padding-top: 100px; }
+.skills h2 { font-size: clamp(30px, 3.6vw, 46px); letter-spacing: -.5px; }
+.section-intro { max-width: 560px; margin: 16px 0 44px; color: var(--ink-soft); font-size: 15.5px; line-height: 1.6; }
+
+.skills-layout { display: grid; grid-template-columns: .8fr 2.2fr; gap: 50px; }
+.skills-count { display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+/* même bleu que le cercle du hero, avec le motif du fond par-dessus
+   (pattern-tile-light.png = les mêmes arcs, en blanc sur fond transparent) */
+.count-circle {
+  position: relative; overflow: hidden;
+  width: 190px; height: 190px; border-radius: 50%;
+  background-image: var(--img-tile),
+                    linear-gradient(150deg, #7da4ca 0%, #5581bd 55%, #446ea6 100%);
+  background-size: 38px 38px, cover;
+  background-repeat: repeat, no-repeat;
+  color: var(--white);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  box-shadow: 0 18px 34px -20px rgba(35, 60, 95, .6);
+}
+.count-num { font: 800 48px/1 var(--font-display); letter-spacing: -1px; }
+.count-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2.5px; }
+.count-jp { margin-top: 4px; font-family: var(--font-display); font-size: 11px; letter-spacing: 1px; opacity: .75; }
+.skills-count p { margin: 0; color: var(--ink-soft); font-size: 14px; line-height: 1.6; }
+
+.skill-group { padding: 22px 0; border-bottom: 1px solid var(--line-soft); }
+.skill-group:first-child { padding-top: 0; }
+.skill-group-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+.group-num { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+.skill-group-head h3 { font-size: 15px; letter-spacing: .5px; }
+.group-jp { margin-left: auto; color: var(--line); font-family: var(--font-display); font-weight: 700; font-size: 13px; }
+
+.skill-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+.skill-tile { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 96px; font-size: 12px; font-weight: 600; text-align: center; }
+.tile-icon { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 18px; font-weight: 700; background: color-mix(in srgb, var(--tile) 14%, var(--tile-base)); color: var(--tile-fg, var(--tile)); border: 1px solid color-mix(in srgb, var(--tile) 32%, var(--tile-base)); }
+.tile-icon svg { width: 24px; height: 24px; fill: currentColor; }
+
+/* ---------- projects ---------- */
+.projects { padding-top: 100px; padding-bottom: 100px; }
+.projects h2 { font-size: clamp(30px, 3.6vw, 46px); letter-spacing: -.5px; }
+.project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.project-card { display: flex; flex-direction: column; background: var(--paper-raised); border: 1px solid var(--line); border-radius: 16px; padding: 18px; transition: transform .25s, box-shadow .25s; }
+.project-card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px -18px color-mix(in srgb, var(--ink) 40%, transparent); }
+.card-mock { position: relative; height: 130px; border-radius: 10px; margin-bottom: 16px; overflow: hidden; padding: 14px; border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
+.card-mock[data-tone="1"] { background: var(--mock-1); }
+.card-mock[data-tone="2"] { background: var(--mock-2); }
+.card-mock[data-tone="3"] { background: var(--mock-3); }
+.mock-bar { display: flex; gap: 5px; margin-bottom: 14px; }
+.mock-bar span { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--ink) 18%, transparent); }
+.mock-jp { position: absolute; right: 12px; bottom: 8px; font-family: var(--font-display); font-weight: 800; font-size: 22px; color: color-mix(in srgb, var(--ink) 12%, transparent); }
+.mock-lines { display: flex; flex-direction: column; gap: 8px; }
+.mock-lines span { display: block; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--ink) 14%, transparent); }
+.mock-lines span:nth-child(1) { width: 70%; }
+.mock-lines span:nth-child(2) { width: 50%; }
+.mock-lines span:nth-child(3) { width: 60%; }
+.project-card h3 { font-size: 19px; margin-bottom: 10px; }
+.tags { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 12px; }
+.tags span { border: 1px solid var(--line); border-radius: 100px; padding: 5px 10px; font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-soft); }
+.project-card > p { margin: 0; color: var(--ink-soft); font-size: 14px; line-height: 1.6; flex-grow: 1; }
+.card-links { display: flex; gap: 18px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line-soft); font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; }
+.card-links a:hover { color: var(--accent); }
+
+/* ---------- contact ---------- */
+.contact { padding-top: 110px; padding-bottom: 110px; }
+.contact h2 { font-size: clamp(30px, 3.6vw, 46px); letter-spacing: -.5px; }
+.contact-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 40px; margin-top: 40px; }
+.contact-cards { display: flex; flex-direction: column; gap: 14px; }
+.contact-card { display: flex; align-items: center; gap: 16px; padding: 20px; background: var(--paper-raised); border: 1px solid var(--line); border-radius: 14px; transition: transform .2s, box-shadow .2s, border-color .2s; }
+/* les cartes email / LinkedIn / téléphone sont cliquables */
+a.contact-card:hover, a.contact-card:focus-visible { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 12px 22px -16px color-mix(in srgb, var(--ink) 60%, transparent); }
+.contact-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-size: 18px; flex: none; }
+.contact-icon svg { width: 20px; height: 20px; }
+.contact-card div { display: flex; flex-direction: column; gap: 2px; font-weight: 600; font-size: 14.5px; }
+.contact-card span { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 1px; color: var(--ink-soft); font-weight: 400; }
+
+.contact-form { display: flex; flex-direction: column; gap: 16px; padding: 28px; background: var(--paper-raised); border: 1px solid var(--line); border-radius: 16px; }
+.contact-form label { display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 1px; color: var(--ink-soft); }
+.contact-form input, .contact-form select, .contact-form textarea {
+  padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper);
+  font-size: 16px; color: var(--ink); resize: vertical;
+}
+.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { outline: none; border-color: var(--accent); }
+.form-note { margin: 0; font-size: 12px; color: var(--ink-soft); text-align: center; line-height: 1.5; }
+
+/* ---------- footer ---------- */
+footer { background: var(--invert-bg); color: color-mix(in srgb, var(--invert-fg) 65%, transparent); }
+.footer-top {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
+  max-width: 1400px; margin: 0 auto; padding: 48px var(--edge) 32px;
+}
+.footer-brand { display: flex; flex-direction: column; gap: 4px; }
+.footer-brand strong { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: .5px; color: var(--invert-fg); }
+.footer-brand span { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 1.5px; }
+.footer-nav { display: flex; flex-wrap: wrap; gap: 24px; font-family: var(--font-mono); font-size: 12.5px; }
+.footer-nav a:hover, .footer-nav a:focus-visible { color: var(--invert-fg); }
+.footer-bottom {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  max-width: 1400px; margin: 0 auto; padding: 20px var(--edge) 32px;
+  border-top: 1px solid color-mix(in srgb, var(--invert-fg) 12%, transparent);
+  font-family: var(--font-mono); font-size: 11.5px;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 980px) {
+  .hero-inner { grid-template-columns: minmax(0, 1fr); }
+  .hero-side { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; width: 100%; row-gap: 8px; }
+  .hero-art { order: -1; height: 260px; }
+  /* en colonne unique, le cercle se loge dans la bande vide en haut du hero
+     au lieu d'être centré verticalement (sinon il passe derrière le texte) */
+  .hero-circle { top: 40px; transform: translateX(-50%); width: min(240px, 62vw); }
+  .hero-copy { max-width: none; }
+  /* en colonne unique, seules les feuilles du haut restent hors du texte */
+  .leaf-3, .leaf-4, .leaf-6 { display: none; }
+  .leaf-1 { top: 3%; left: 12%; --h: 70px; }
+  .leaf-2 { top: 16%; left: 76%; --h: 56px; }
+  .leaf-5 { top: 30%; right: 8%; --h: 50px; }
+  .about-grid { grid-template-columns: minmax(0, 1fr); }
+  .about-photo { flex-direction: row; }
+  .skills-layout { grid-template-columns: minmax(0, 1fr); }
+  .skills-count { flex-direction: row; flex-wrap: wrap; text-align: left; }
+  .project-grid { grid-template-columns: repeat(2, 1fr); }
+  .contact-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  :root { --edge: 24px; }
+  .header-inner { padding-top: 16px; padding-bottom: 16px; }
+  .nav-toggle { display: flex; }
+  /* Menu déroulant mobile.
+     - fermé : aucune hauteur NI padding, sinon une bande vide de 27 px
+       (le padding haut + bas) reste visible sous l'en-tête ;
+     - ouvert : `80vh` au lieu d'un nombre fixe. L'ancienne valeur de 260 px
+       était juste au-dessus des 194 px nécessaires : au moindre changement
+       (texte plus grand, entrée de menu en plus, zoom du navigateur),
+       les derniers liens se retrouvaient coupés. */
+  nav[aria-label="Navigation principale"] {
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; gap: 0; padding: 0 var(--edge);
+    background: var(--paper); border-bottom: 1px solid transparent;
+    max-height: 0; overflow: hidden;
+    transition: max-height .3s ease, padding .3s ease, border-color .3s ease;
+  }
+  nav[aria-label="Navigation principale"].is-open {
+    max-height: 80vh; padding: 8px var(--edge) 18px;
+    border-bottom-color: var(--line-soft);
+  }
+  nav[aria-label="Navigation principale"] a { padding: 12px 0; border-bottom: 1px dashed var(--line-soft); }
+
+  .hero { min-height: auto; padding-top: 30px; padding-bottom: 50px; }
+  .section { padding-top: 60px; }
+  .about, .skills { padding-top: 60px; }
+  .projects, .contact { padding-top: 60px; padding-bottom: 60px; }
+  .about-photo { flex-direction: column; }
+  .photo-circle { width: 160px; height: 160px; font-size: 64px; }
+  .skills-count { flex-direction: column; text-align: center; }
+  .info-grid { grid-template-columns: 1fr; }
+  /* PROJETS SUR MOBILE — carrousel horizontal.
+     Empilées, les cartes font 515 px chacune : 3 projets = 2,2 écrans de
+     défilement, 6 projets = 4,1 écrans. Ici la section garde la hauteur
+     d'UNE carte quel que soit le nombre de projets.
+     Les cartes font 85 % de large : on aperçoit la suivante, ce qui indique
+     qu'on peut faire glisser sans avoir besoin de l'écrire. */
+  .project-grid {
+    display: flex;
+    grid-template-columns: none;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    /* déborde jusqu'aux bords de l'écran : le défilement paraît naturel
+       et la dernière carte n'est pas collée au bord */
+    margin-inline: calc(-1 * var(--edge));
+    padding: 4px var(--edge) 10px;
+    scrollbar-width: none;
+  }
+  .project-grid::-webkit-scrollbar { display: none; }
+  .project-card {
+    flex: 0 0 85%;
+    scroll-snap-align: center;
+  }
+  /* au doigt, l'effet de survol reste « collé » après le glissement */
+  .project-card:hover { transform: none; box-shadow: none; }
+  .footer-top, .footer-bottom { flex-direction: column; align-items: flex-start; text-align: left; }
+}
