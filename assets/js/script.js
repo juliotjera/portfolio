@@ -90,20 +90,11 @@ nav.querySelectorAll("a").forEach((link) => {
 // Révélation au chargement + au défilement
 const revealItems = document.querySelectorAll(".reveal");
 
-function startLeafMotion(item) {
-  if (!item.classList.contains("leaf") || item.dataset.motionStarted) return;
-  item.dataset.motionStarted = "true";
-  setTimeout(() => {
-    item.classList.add("is-floating");
-  }, 1450);
-}
-
 function revealOnLoad() {
   revealItems.forEach((item, index) => {
     const delay = Math.min(index * 80, 280);
     item.style.transitionDelay = `${delay}ms`;
     item.classList.add("is-visible");
-    startLeafMotion(item);
   });
 }
 
@@ -117,7 +108,6 @@ if ("IntersectionObserver" in window) {
             const delay = Array.from(el.parentElement.children).indexOf(el) * 60;
             el.style.transitionDelay = `${Math.min(delay, 240)}ms`;
             el.classList.add("is-visible");
-            startLeafMotion(el);
           }
           observer.unobserve(el);
         }

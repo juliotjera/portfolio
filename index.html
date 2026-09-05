@@ -8,13 +8,19 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Juliot JERA — Étudiant en développement informatique" />
     <meta property="og:description" content="Portfolio de Juliot JERA, étudiant en Licence 3 Informatique à Antananarivo — React, Node.js, Java, PostgreSQL. En recherche de stage." />
-    <meta property="og:image" content="og-image.png" />
+    <meta property="og:image" content="assets/img/og-image.png" />
+    <!-- Les dimensions evitent que le partage affiche une vignette carree
+         le temps que le fichier soit telecharge par le reseau social. -->
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Juliot JERA — etudiant developpeur, en recherche de stage" />
+    <meta property="og:locale" content="fr_FR" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%226%22 fill=%22%23171b34%22/><text x=%2212%22 y=%2217%22 font-size=%2214%22 font-family=%22sans-serif%22 font-weight=%22800%22 fill=%22%23fff%22 text-anchor=%22middle%22>J</text></svg>" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
     <script>
       // Applique le thème AVANT le rendu, sinon la page s'affiche en clair
       // une fraction de seconde avant de basculer en sombre (effet de flash).
@@ -64,17 +70,34 @@
              Centré sur la section, comme dans le visuel d'origine. -->
         <div class="hero-circle is-cutout" aria-hidden="true"></div>
 
+        <!-- Décors détachés du visuel de fond : vent, oiseaux, papillon,
+             pagode. Ce sont de vraies images (comme les feuilles), donc elles
+             peuvent bouger indépendamment du motif de vagues. -->
+        <span class="deco deco-vent-haut" aria-hidden="true"></span>
+        <span class="deco deco-vent-bas" aria-hidden="true"></span>
+        <span class="deco deco-pagode" aria-hidden="true"></span>
+        <span class="deco deco-papillon" aria-hidden="true"></span>
+        <span class="deco deco-oiseau deco-oiseau-1" aria-hidden="true"></span>
+        <span class="deco deco-oiseau deco-oiseau-2" aria-hidden="true"></span>
+        <span class="deco deco-oiseau deco-oiseau-3" aria-hidden="true"></span>
+        <span class="deco deco-oiseau deco-oiseau-4" aria-hidden="true"></span>
+        <span class="deco deco-oiseau deco-oiseau-5" aria-hidden="true"></span>
+        <span class="deco deco-oiseau deco-oiseau-6" aria-hidden="true"></span>
+        <span class="deco deco-oiseau deco-oiseau-7" aria-hidden="true"></span>
+
         <!-- feuilles qui flottent (image leaf.png), dispersées sur toute la section -->
-        <span class="leaf leaf-1 reveal from-left" aria-hidden="true"></span>
-        <span class="leaf leaf-2 reveal from-top" aria-hidden="true"></span>
-        <span class="leaf leaf-3 reveal from-bottom" aria-hidden="true"></span>
-        <span class="leaf leaf-4 reveal from-right" aria-hidden="true"></span>
-        <span class="leaf leaf-5 reveal from-left" aria-hidden="true"></span>
-        <span class="leaf leaf-6 reveal from-bottom" aria-hidden="true"></span>
-        <span class="leaf leaf-7 reveal from-right" aria-hidden="true"></span>
+        <span class="leaf leaf-1" aria-hidden="true"></span>
+        <span class="leaf leaf-2" aria-hidden="true"></span>
+        <span class="leaf leaf-3" aria-hidden="true"></span>
+        <span class="leaf leaf-4" aria-hidden="true"></span>
+        <span class="leaf leaf-5" aria-hidden="true"></span>
+        <span class="leaf leaf-6" aria-hidden="true"></span>
+        <span class="leaf leaf-7" aria-hidden="true"></span>
+        <span class="leaf leaf-8" aria-hidden="true"></span>
+        <span class="leaf leaf-9" aria-hidden="true"></span>
 
         <div class="hero-inner">
-        <div class="hero-copy reveal from-left">
+        <div class="hero-copy">
           <p class="eyebrow-jp hero-jp">— #一期一会</p>
           <p class="hero-romaji">ICHI-GO ICHI-E</p>
           <h1>JULIOT<br />JERA</h1>
@@ -87,9 +110,9 @@
           </div>
         </div>
 
-        <div class="hero-art reveal from-bottom" aria-hidden="true"></div>
+        <div class="hero-art" aria-hidden="true"></div>
 
-        <div class="hero-side reveal from-right">
+        <div class="hero-side">
           <p class="badge-open">EN RECHERCHE DE STAGE <span class="pulse"></span></p>
           <p class="hero-year" id="year-big"></p>
           <p class="hero-loc">ANTANANARIVO</p>
@@ -125,7 +148,7 @@
             </div>
 
             <div class="hero-actions">
-              <a class="button primary" href="CV_JERA_Juliot.pdf" download="CV-Juliot-JERA.pdf">Télécharger mon CV</a>
+              <a class="button primary" href="assets/doc/CV_JERA_Juliot.pdf" download="CV-Juliot-JERA.pdf">Télécharger mon CV</a>
               <a class="button ghost" href="#contact">Discutons</a>
             </div>
           </div>
@@ -225,7 +248,10 @@
             <h3>Tanàna Madio</h3>
             <div class="tags"><span>React.js</span><span>Node.js</span><span>Flutter</span><span>PostgreSQL / PostGIS</span></div>
             <p>Plateforme de gestion des déchets urbains : application web full-stack et version mobile, 6 modules fonctionnels. Authentification JWT et optimisation des tournées de collecte (Dijkstra + glouton), soit −20 % de distance simulée. Projet transversal individuel de L2, avec 4 diagrammes UML et rapport académique.</p>
-            <div class="card-links"><a href="#contact">↗ Démo</a><a href="#contact">&lt;/&gt; Code</a></div>
+            <!-- Quand le dépôt sera public, remplacer par :
+                 <a href="https://github.com/…">&lt;/&gt; Code</a>
+                 et, s'il y a une démo en ligne, <a href="https://…">↗ Démo</a> -->
+            <div class="card-links"><a href="#contact">↗ Code et démo sur demande</a></div>
           </article>
 
           <article class="project-card reveal from-bottom">
@@ -237,7 +263,10 @@
             <h3>Plateforme de vote électronique</h3>
             <div class="tags"><span>Web</span><span>Travail d'équipe</span></div>
             <p>Application de vote électronique conçue et développée en équipe de 3 personnes, en 6 semaines, avec plus de 150 votes simulés lors des tests. Projet transversal de L1.</p>
-            <div class="card-links"><a href="#contact">↗ Démo</a><a href="#contact">&lt;/&gt; Code</a></div>
+            <!-- Quand le dépôt sera public, remplacer par :
+                 <a href="https://github.com/…">&lt;/&gt; Code</a>
+                 et, s'il y a une démo en ligne, <a href="https://…">↗ Démo</a> -->
+            <div class="card-links"><a href="#contact">↗ Code et démo sur demande</a></div>
           </article>
 
           <article class="project-card reveal from-bottom">
@@ -249,7 +278,10 @@
             <h3>Mini-projets en PHP natif</h3>
             <div class="tags"><span>PHP</span><span>Sans framework</span></div>
             <p>Cinq applications développées en PHP natif, volontairement sans framework, pour consolider les fondamentaux du développement back-end et les bases algorithmiques. Réalisées en L1.</p>
-            <div class="card-links"><a href="#contact">↗ Démo</a><a href="#contact">&lt;/&gt; Code</a></div>
+            <!-- Quand le dépôt sera public, remplacer par :
+                 <a href="https://github.com/…">&lt;/&gt; Code</a>
+                 et, s'il y a une démo en ligne, <a href="https://…">↗ Démo</a> -->
+            <div class="card-links"><a href="#contact">↗ Code et démo sur demande</a></div>
           </article>
         </div>
         </div>
@@ -330,6 +362,6 @@
       </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="assets/js/script.js"></script>
   </body>
 </html>

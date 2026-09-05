@@ -13,7 +13,7 @@
   --accent-btn-dark: #35619d;
   --btn-fg: #ffffff;
   --white: #ffffff;
-  --romaji: #8d99b4;
+  --romaji: #76839f;
   --intro-fg: #4a5163;
   --ok: #1a9b6c;
   /* surface inversée (logo, badge photo, pied de page) */
@@ -27,17 +27,28 @@
   /* Photo de profil.
      Mode actuel : photo NON détourée, recadrée en rond dans les cercles.
      Pour passer au rendu du template (tête qui dépasse du cercle), il faut
-     une image détourée en PNG : remplacer par url("photo.png") et remettre
+     une image détourée en PNG : remplacer par url("../img/photo.png") et remettre
      la classe `is-cutout` sur les deux cercles dans index.html. */
   /* photo détourée (fond transparent) — générée depuis pdp.jpeg */
-  --photo: url("photo.png");
+  --photo: url("../img/photo.png");
   --photo-position: center bottom;
 
   /* visuels dépendant du thème */
-  --bg-hero: url("background-1.webp");
-  --bg-section: url("background-2.webp");
-  --img-leaf: url("leaf.png");
-  --img-tile: url("pattern-tile-light.png");
+  --bg-hero: url("../img/fond/background-1.webp");
+  --bg-section: url("../img/fond/background-2.webp");
+  --img-leaf: url("../img/leaf.png");
+  --img-vent-haut: url("../img/deco/deco-vent-haut.png");
+  --img-vent-bas: url("../img/deco/deco-vent-bas.png");
+  --img-pagode: url("../img/deco/deco-pagode.png");
+  --img-papillon: url("../img/deco/deco-papillon.png");
+  --img-oiseau-1: url("../img/deco/deco-oiseau-1.png");
+  --img-oiseau-2: url("../img/deco/deco-oiseau-2.png");
+  --img-oiseau-3: url("../img/deco/deco-oiseau-3.png");
+  --img-oiseau-4: url("../img/deco/deco-oiseau-4.png");
+  --img-oiseau-5: url("../img/deco/deco-oiseau-5.png");
+  --img-oiseau-6: url("../img/deco/deco-oiseau-6.png");
+  --img-oiseau-7: url("../img/deco/deco-oiseau-7.png");
+  --img-tile: url("../img/fond/pattern-tile-light.png");
   --section-pattern-opacity: .25;
 
   --font-display: "Plus Jakarta Sans", sans-serif;
@@ -74,10 +85,21 @@
   --mock-1: linear-gradient(135deg, #202742, #171b28);
   --mock-2: linear-gradient(135deg, #35222a, #201820);
   --mock-3: linear-gradient(135deg, #172b25, #14201d);
-  --bg-hero: url("background-1-dark.webp");
-  --bg-section: url("background-2-dark.webp");
-  --img-leaf: url("leaf-dark.png");
-  --img-tile: url("pattern-tile-dark.png");
+  --bg-hero: url("../img/fond/background-1-dark.webp");
+  --bg-section: url("../img/fond/background-2-dark.webp");
+  --img-leaf: url("../img/leaf-dark.png");
+  --img-vent-haut: url("../img/deco/deco-vent-haut-dark.png");
+  --img-vent-bas: url("../img/deco/deco-vent-bas-dark.png");
+  --img-pagode: url("../img/deco/deco-pagode-dark.png");
+  --img-papillon: url("../img/deco/deco-papillon-dark.png");
+  --img-oiseau-1: url("../img/deco/deco-oiseau-1-dark.png");
+  --img-oiseau-2: url("../img/deco/deco-oiseau-2-dark.png");
+  --img-oiseau-3: url("../img/deco/deco-oiseau-3-dark.png");
+  --img-oiseau-4: url("../img/deco/deco-oiseau-4-dark.png");
+  --img-oiseau-5: url("../img/deco/deco-oiseau-5-dark.png");
+  --img-oiseau-6: url("../img/deco/deco-oiseau-6-dark.png");
+  --img-oiseau-7: url("../img/deco/deco-oiseau-7-dark.png");
+  --img-tile: url("../img/fond/pattern-tile-dark.png");
   --section-pattern-opacity: .35;
   color-scheme: dark;
 }
@@ -210,11 +232,16 @@ nav a:hover, nav a:focus-visible { color: var(--ink); }
 .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 800; margin: 0; }
 
+/* Chronometre sur la video de reference : chaque element y met environ
+   0,45 a 0,55 s a apparaitre, avec un flou d entree qui divise la nettete
+   par deux (mesure : gradient normalise 0,029 -> 0,059 sur le titre).
+   L ancienne version durait 1,2 s, partait de 30-40 px et floutait a 4 px :
+   trois fois trop lent et deux fois trop flou. */
 .reveal {
   opacity: 0;
-  transform: translate3d(0, 30px, 0) scale(.98);
-  transition: opacity 1.2s cubic-bezier(.16, 1, .3, 1), transform 1.2s cubic-bezier(.16, 1, .3, 1), filter 1.2s ease;
-  filter: blur(4px);
+  transform: translate3d(0, 12px, 0) scale(.985);
+  transition: opacity .62s cubic-bezier(.22, 1, .36, 1), transform .62s cubic-bezier(.22, 1, .36, 1), filter .62s ease;
+  filter: blur(2px);
 }
 .reveal.is-visible {
   opacity: 1;
@@ -222,10 +249,10 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; margin: 0; }
   filter: blur(0);
 }
 
-.reveal.from-left { transform: translate3d(-40px, 0, 0) scale(.98); }
-.reveal.from-right { transform: translate3d(40px, 0, 0) scale(.98); }
-.reveal.from-top { transform: translate3d(0, -30px, 0) scale(.98); }
-.reveal.from-bottom { transform: translate3d(0, 30px, 0) scale(.98); }
+.reveal.from-left { transform: translate3d(-14px, 0, 0) scale(.985); }
+.reveal.from-right { transform: translate3d(14px, 0, 0) scale(.985); }
+.reveal.from-top { transform: translate3d(0, -12px, 0) scale(.985); }
+.reveal.from-bottom { transform: translate3d(0, 12px, 0) scale(.985); }
 
 .reveal.from-left.is-visible,
 .reveal.from-right.is-visible,
@@ -236,11 +263,22 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; margin: 0; }
 
 /* ---------- hero ---------- */
 .hero {
+  --hero-pad-top: 40px;
   min-height: 92vh; display: flex; align-items: center;
-  padding-top: 40px; padding-bottom: 60px; overflow: hidden;
+  padding-top: var(--hero-pad-top); padding-bottom: 60px; overflow: hidden;
 }
+/* ORDRE D EMPILEMENT DU HERO — du fond vers la surface :
+     -1  .hero-waves    le motif de vagues
+      1  .hero-circle   le cercle bleu et la photo
+      2  .deco          vent, oiseaux, papillon, pagode
+      3  .leaf          les feuilles, qui passent devant la photo
+      4  .hero-inner    tout le texte, toujours au-dessus
+   Le texte n ayant aucun fond, ce classement ne suffit pas a lui seul :
+   un trait passant derriere une lettre reste visible entre ses jambages.
+   Les decors assez grands pour atteindre la colonne de texte portent donc
+   en plus un masque qui les eteint de ce cote (voir .deco-vent-bas). */
 .hero-inner {
-  position: relative; width: 100%; max-width: 1400px; margin: 0 auto;
+  position: relative; z-index: 4; width: 100%; max-width: 1400px; margin: 0 auto;
   padding-left: var(--edge); padding-right: var(--edge);
   display: grid; grid-template-columns: 1.05fr .95fr auto;
   align-items: center; gap: 20px;
@@ -248,6 +286,9 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; margin: 0; }
 /* fonds décoratifs (images) — pleine largeur de fenêtre, sous le contenu */
 .hero-waves {
   position: absolute; top: 0; bottom: 0; height: 100%; left: 50%; width: 100vw;
+  /* -1 et non 0 : .hero-waves sert aussi aux sections 3 et 5, dont le
+     contenu (.section-inner) n est pas positionne. A z-index: 0 le motif
+     passerait devant leur texte. */
   transform: translateX(-50%); z-index: -1; pointer-events: none;
   background-repeat: no-repeat; background-position: center; background-size: cover;
 }
@@ -312,10 +353,28 @@ h1 { font-size: clamp(44px, 7vw, 106px); line-height: .92; letter-spacing: -1px;
    aligné avec cette colonne, et donc avec la photo qui viendra dedans. */
 .hero-art { position: relative; display: grid; place-items: center; height: 380px; color: var(--ink); }
 /* centré sur la section, derrière le texte (comme dans le visuel d'origine) */
+/* PLANS DU HERO — de l arriere vers l avant :
+    -1  .hero-waves   le motif de vagues
+     1  .hero-circle  le cercle bleu et la photo
+     2  .deco         vent, oiseaux, papillon, pagode
+     3  .leaf         les feuilles, qui passent devant la photo
+     4  .hero-inner   TOUT le texte, toujours au-dessus
+   Avant, ces elements partageaient z-index: -1 et ne devaient d etre
+   sous le texte qu au fait que .hero-inner est positionne. C etait
+   fragile, et surtout ca ne disait rien de l ordre entre eux. */
+/* .hero-circle n est plus qu un reperage : le disque bleu est peint par son
+   ::before et la photo par son ::after. Tant que le degrade etait le fond
+   de l element lui-meme, animer le cercle animait aussi la photo — un
+   pseudo-element subit forcement la transformation de son parent. Les deux
+   entrent maintenant separement : le cercle grandit, la photo monte. */
 .hero-circle {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  z-index: -1;
-  width: min(470px, 32vw); aspect-ratio: 1; border-radius: 50%;
+  position: absolute; left: 50%; top: 50%;
+  translate: -50% -50%;
+  z-index: 1;
+  width: min(470px, 32vw); aspect-ratio: 1;
+}
+.hero-circle::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
   background: linear-gradient(150deg, #afc9e2 0%, #93b5d6 22%, #7da4ca 50%, #4a719d 100%);
   box-shadow: 0 30px 50px -30px rgba(35, 60, 95, .55);
 }
@@ -361,76 +420,79 @@ h1 { font-size: clamp(44px, 7vw, 106px); line-height: .92; letter-spacing: -1px;
 }
 /* feuilles flottantes — visuel : leaf.png (fond transparent)
    --rot = inclinaison de base, l'animation ajoute le balancement */
+/* ============================================================
+   FEUILLES — flou, densite et mouvement
+   ------------------------------------------------------------
+   DENSITE : dans la video le noyau de chaque feuille vaut 0 a 19 en
+   luminance sur un motif a 220 — aussi dense que le texte du titre. Elles
+   sont donc PLEINEMENT OPAQUES. Les opacites de 0,8 a 0,95 que je leur
+   avais mises les delavaient : a 0,8 sur ce fond, le noir remonte a 59.
+
+   FLOU : aucune feuille n est nette. Mesure sur une coupe longue, la bande
+   10-90 % du bord fait 6 px a 1024 de large, soit un ecart-type de 2,4 px
+   — la valeur que prend blur(). Il suit la largeur de la fenetre plutot
+   que de rester fixe, d ou le clamp en vw.
+
+   MOUVEMENT : la fenetre exploitable de la video ne fait que 3 secondes
+   (au-dela la page defile), ce qui suffit a donner une borne basse mais
+   pas a couvrir un cycle. Deux consequences que j avais mal lues :
+     • les vitesses relevees (0 a 6 px/s) sont un minimum, pas le
+       mouvement reel — les amplitudes ici sont plus franches ;
+     • les feuilles qui paraissaient immobiles etaient simplement au point
+       de rebroussement de leur cycle, ou la vitesse est nulle par
+       construction. Aucune n est fixe.
+
+   PHASE : chaque feuille porte un --phase NEGATIF distinct, qui la fait
+   demarrer deja engagee dans son cycle. Sans lui, les neuf partaient
+   ensemble de la phase 0 : au chargement elles etaient toutes a leur
+   position de repos, puis se mettaient en route au meme instant.
+   ============================================================ */
 .leaf {
-  position: absolute; --rot: 0deg; --h: 70px;
+  position: absolute; z-index: 3;
+  --rot: 0deg; --h: 70px;
   --drift-x: 0px; --drift-y: 0px; --sway: 0deg;
-  --leaf-blur: 2px;
+  --duree: 20s; --flou: 1; --opacite: 1;
   width: calc(var(--h) / 3.2); height: var(--h);
   background: var(--img-leaf) center / contain no-repeat;
-  opacity: 0; filter: blur(var(--leaf-blur)); pointer-events: none;
-  animation: none;
+  filter: blur(calc(var(--flou) * clamp(1.6px, .23vw, 4.6px)));
+  pointer-events: none;
+  transform: rotate(var(--rot));
+  opacity: 0;
+  /* deux animations qui ne se disputent rien : l entree joue sur opacity
+     et translate, la derive sur transform. */
+  animation:
+    feuille-entree .5s cubic-bezier(.22, 1, .36, 1) var(--entree, 900ms) both,
+    derive var(--duree) ease-in-out var(--phase, -7s) infinite;
 }
 
-.leaf.is-visible {
-  animation: leaf-entry 1.45s cubic-bezier(.16, 1, .3, 1) forwards;
+/* Releve sur la video : la feuille arrive de 16 px en bas a droite et se
+   pose en 0,4 s (centre suivi de 447,137 a 439,123 entre t=2,2 et 2,6). */
+@keyframes feuille-entree {
+  from { opacity: 0; translate: 9px 14px; }
+  to   { opacity: var(--opacite); translate: 0 0; }
 }
 
-.leaf.is-floating {
-  animation: drift 7s ease-in-out infinite;
-}
-
-.reveal.leaf.leaf-1 { opacity: 1; --leaf-blur: 3px; }
-.reveal.leaf.leaf-2 { opacity: .9; --leaf-blur: 3px; }
-.reveal.leaf.leaf-3 { opacity: .8; --leaf-blur: 3px; }
-.reveal.leaf.leaf-4 { opacity: .9; --leaf-blur: 3px; }
-.reveal.leaf.leaf-5 { opacity: .7; --leaf-blur: 0px; }
-.reveal.leaf.leaf-6 { opacity: .8; --leaf-blur: 0px; }
-.reveal.leaf.leaf-7 { opacity: .9; --leaf-blur: .5px; }
-
-.reveal.leaf.leaf-1,
-.reveal.leaf.leaf-2,
-.reveal.leaf.leaf-3,
-.reveal.leaf.leaf-4,
-.reveal.leaf.leaf-5,
-.reveal.leaf.leaf-6,
-.reveal.leaf.leaf-7 {
-  filter: blur(var(--leaf-blur));
-}
-
-.leaf-1 { top: -5%; left: 40%; --h: 170px; --rot: 18deg; --drift-x: -18px; --drift-y: -12px; --sway: 12deg; }
-.leaf-2 { top: -5%; left: 55%; --h: 150px; --rot: -30deg; --drift-x: 18px; --drift-y: -10px; --sway: -12deg; }
-.leaf-3 { top: 90%; left: 30%; --h: 150px; --rot: -40deg; --drift-x: -14px; --drift-y: 12px; --sway: -10deg; }
-.leaf-4 { top: 85%; left: 65%; --h: 150px; --rot: 20deg; --drift-x: 14px; --drift-y: 10px; --sway: 10deg; }
-.leaf-5 { top: 15%; right: 65%; --h: 75px; --rot: 60deg; --drift-x: -12px; --drift-y: -6px; --sway: 9deg; }
-.leaf-6 { top: 75%; right: 5%; --h: 60px; --rot: -50deg; --drift-x: 14px; --drift-y: 8px; --sway: -9deg; }
-.leaf-7 { top: 60%; right: 30%; --h: 100px; --rot: 50deg; --drift-x: 12px; --drift-y: -8px; --sway: 8deg; }
-
-@keyframes drift {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) rotate(var(--rot));
-  }
+@keyframes derive {
+  0%, 100% { transform: rotate(var(--rot)); }
   50% {
-    transform: translate3d(var(--drift-x), var(--drift-y), 0) rotate(calc(var(--rot) + var(--sway)));
+    transform: translate3d(var(--drift-x), var(--drift-y), 0)
+               rotate(calc(var(--rot) + var(--sway)));
   }
 }
 
-@keyframes leaf-entry {
-  from {
-    opacity: 0;
-    transform: translate3d(var(--entry-x), var(--entry-y), 0) rotate(calc(var(--rot) - 14deg));
-    filter: blur(7px);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) rotate(var(--rot));
-    filter: blur(var(--leaf-blur));
-  }
-}
+.leaf-1 { top:  -6%; left: 40%; --h: 185px; --rot:  18deg; --drift-x: -58px; --drift-y:  40px; --sway:  9deg; --duree: 22s; --phase:  -3s; --entree: 880ms;  --flou: 1.15; }
 
-.leaf.from-left { --entry-x: -80px; --entry-y: 12px; }
-.leaf.from-right { --entry-x: 80px; --entry-y: -12px; }
-.leaf.from-top { --entry-x: 12px; --entry-y: -80px; }
-.leaf.from-bottom { --entry-x: -12px; --entry-y: 80px; }
+.leaf-2 { top:  -7%; left: 55%; --h: 175px; --rot: -28deg; --drift-x:  52px; --drift-y:  26px; --sway: -8deg; --duree: 25s; --phase: -14s; --entree: 940ms;  --flou: 1.15; }
+.leaf-3 { top:  12%; left: 32%; --h: 110px; --rot:  55deg; --drift-x: -44px; --drift-y:  24px; --sway:  7deg; --duree: 19s; --phase:  -8s; --entree: 1000ms; --flou: 1; }
+.leaf-4 { top:  55%; left: 68%; --h: 115px; --rot:  48deg; --drift-x:  40px; --drift-y: -20px; --sway: -6deg; --duree: 24s; --phase: -19s; --entree: 1060ms; --flou: .95; }
+.leaf-5 { top:  55%; left: 88%; --h: 105px; --rot: -40deg; --drift-x: -46px; --drift-y:  24px; --sway:  8deg; --duree: 21s; --phase:  -5s; --entree: 1120ms; --flou: .9; }
+.leaf-6 { top:  84%; left: 22%; --h: 150px; --rot: -35deg; --drift-x:  56px; --drift-y: -34px; --sway: -9deg; --duree: 23s; --phase: -11s; --entree: 900ms;  --flou: 1.1; }
+.leaf-7 { top:  86%; left: 40%; --h: 160px; --rot:  22deg; --drift-x: -68px; --drift-y: -32px; --sway: 10deg; --duree: 20s; --phase: -17s; --entree: 980ms;  --flou: 1.15; }
+.leaf-8 { top:  88%; left: 61%; --h: 130px; --rot: -18deg; --drift-x:  42px; --drift-y: -22px; --sway: -7deg; --duree: 26s; --phase:  -2s; --entree: 1040ms; --flou: 1.05; }
+.leaf-9 { top:  80%; left: 76%; --h: 120px; --rot:  40deg; --drift-x: -50px; --drift-y:  26px; --sway:  8deg; --duree: 18s; --phase:  -9s; --entree: 1100ms; --flou: .95; }
+
+
+
 
 .hero-side { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; text-align: right; }
 .badge-open { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin: 0 0 6px; font-family: var(--font-display); font-weight: 800; font-size: clamp(11px, .95vw, 15px); letter-spacing: 2px; color: var(--ink); white-space: nowrap; text-transform: uppercase; }
@@ -552,6 +614,8 @@ a.contact-card:hover, a.contact-card:focus-visible { transform: translateY(-2px)
 
 /* ---------- footer ---------- */
 footer { background: var(--invert-bg); color: color-mix(in srgb, var(--invert-fg) 65%, transparent); }
+footer a { color: color-mix(in srgb, var(--invert-fg) 82%, transparent); }
+footer a:hover, footer a:focus-visible { color: var(--invert-fg); }
 .footer-top {
   display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
   max-width: 1400px; margin: 0 auto; padding: 48px var(--edge) 32px;
@@ -572,16 +636,47 @@ footer { background: var(--invert-bg); color: color-mix(in srgb, var(--invert-fg
 @media (max-width: 980px) {
   .hero-inner { grid-template-columns: minmax(0, 1fr); }
   .hero-side { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; width: 100%; row-gap: 8px; }
-  .hero-art { order: -1; height: 260px; }
-  /* en colonne unique, le cercle se loge dans la bande vide en haut du hero
-     au lieu d'être centré verticalement (sinon il passe derrière le texte) */
-  .hero-circle { top: 40px; transform: translateX(-50%); width: min(240px, 62vw); }
+  .hero-art { order: -1; height: 280px; }
+  /* .hero-circle est un enfant direct de .hero, il ne suit donc pas
+     .hero-art dans la grille. En une seule colonne, le hero devient tres
+     haut et `top: 50%` renvoyait le cercle au milieu du paragraphe. On le
+     recale ici sur la bande reservee a .hero-art, qui est le premier
+     element de la colonne (donc juste sous le padding haut du hero). */
+  .hero-circle {
+    top: var(--hero-pad-top); bottom: auto;
+    translate: -50% 0;
+    width: min(280px, 66vw);
+  }
+  /* en colonne unique le texte occupe toute la largeur : sans cela il
+     reste bloque a 24vw, soit 90 px sur un telephone. */
   .hero-copy { max-width: none; }
-  /* en colonne unique, seules les feuilles du haut restent hors du texte */
-  .leaf-3, .leaf-4, .leaf-6 { display: none; }
-  .leaf-1 { top: 3%; left: 12%; --h: 70px; }
-  .leaf-2 { top: 16%; left: 76%; --h: 56px; }
-  .leaf-5 { top: 30%; right: 8%; --h: 50px; }
+
+  /* MOTIF DE FOND SUR ECRAN ETROIT
+     `cover` cadre sur la hauteur des que la page devient plus haute que
+     large : sur un telephone les arcs passaient a plus de 80 px, soit
+     quatre arcs pour toute la largeur. On repasse donc a une taille fixe.
+     C est background-2.webp qui sert ici (1920x1000 = exactement 10
+     periodes du motif) : quelle que soit la largeur choisie son image fait
+     toujours exactement 10 periodes de haut,
+     soit 10 periodes pleines — la repetition verticale ne laisse aucune
+     ligne de raccord. */
+  .hero .hero-waves,
+  .skills .hero-waves,
+  .contact .hero-waves {
+    background-image: var(--bg-section);
+    background-size: 760px auto;
+    background-repeat: repeat-y;
+    background-position: center top;
+  }
+  /* En colonne unique la scene est etroite : on garde cinq feuilles,
+     placees hors du bloc de texte (deux en haut, trois en bas), et on
+     reduit leur taille au prorata de la largeur. */
+  .leaf-3, .leaf-4, .leaf-5, .leaf-9 { display: none; }
+  .leaf-1 { top:  -3%; left: 30%; --h: 110px; }
+  .leaf-2 { top:   2%; left: 68%; --h:  95px; }
+  .leaf-6 { top:  86%; left:  8%; --h:  90px; }
+  .leaf-7 { top:  90%; left: 44%; --h: 100px; }
+  .leaf-8 { top:  84%; left: 74%; --h:  80px; }
   .about-grid { grid-template-columns: minmax(0, 1fr); }
   .about-photo { flex-direction: row; }
   .skills-layout { grid-template-columns: minmax(0, 1fr); }
@@ -614,7 +709,7 @@ footer { background: var(--invert-bg); color: color-mix(in srgb, var(--invert-fg
   }
   nav[aria-label="Navigation principale"] a { padding: 12px 0; border-bottom: 1px dashed var(--line-soft); }
 
-  .hero { min-height: auto; padding-top: 30px; padding-bottom: 50px; }
+  .hero { --hero-pad-top: 30px; min-height: auto; padding-bottom: 50px; }
   .section { padding-top: 60px; }
   .about, .skills { padding-top: 60px; }
   .projects, .contact { padding-top: 60px; padding-bottom: 60px; }
@@ -650,4 +745,297 @@ footer { background: var(--invert-bg); color: color-mix(in srgb, var(--invert-fg
   /* au doigt, l'effet de survol reste « collé » après le glissement */
   .project-card:hover { transform: none; box-shadow: none; }
   .footer-top, .footer-bottom { flex-direction: column; align-items: flex-start; text-align: left; }
+}
+
+/* ============================================================
+   DÉCORS DÉTACHÉS DU FOND (vent, oiseaux, papillon, pagode)
+   ------------------------------------------------------------
+   Ces motifs étaient dessinés dans background-1.webp : ils étaient
+   donc figés, alors qu'ils représentent des éléments en mouvement.
+   Ils ont été découpés en PNG transparents (le fond ne contient plus
+   que les vagues), ce qui permet de les animer un par un — comme les
+   feuilles. Chaque élément garde la position qu'il occupait dans le
+   visuel d'origine (coordonnées converties depuis le cadre 1920x1080).
+   Le span porte l'apparition en fondu, le ::before porte le mouvement :
+   deux animations séparées, sinon la seconde écraserait le transform
+   de la première.
+   ============================================================ */
+.deco {
+  position: absolute; z-index: 2; pointer-events: none;
+  opacity: 0;
+  animation: deco-apparition 1.1s ease-out var(--deco-delai, 0s) forwards;
+}
+.deco::before {
+  content: ""; position: absolute; inset: 0;
+  background: var(--deco-src) center / contain no-repeat;
+}
+
+@keyframes deco-apparition {
+  from { opacity: 0; }
+  to   { opacity: var(--deco-opacite, 1); }
+}
+
+/* --- le vent : un souffle lent, presque imperceptible --- */
+.deco-vent-haut,
+.deco-vent-bas { --deco-opacite: .85; }
+
+.deco-vent-haut {
+  top: 0; right: -20px;
+  width: clamp(240px, 30.7vw, 590px); aspect-ratio: 590 / 280;
+  --deco-src: var(--img-vent-haut);
+}
+/* Le souffle du bas remontait dans la colonne de texte : il couvrait 78 %
+   du bloc de boutons et la totalite du chevron de defilement. Le z-index
+   ne reglait rien — le texte n a pas de fond, un trait passant derriere le
+   traverse quand meme visuellement. On le tasse donc dans l angle, et on
+   efface au masque sa partie haut-droite, la seule qui atteignait le texte.
+   Son encre occupe toute sa boite (traits diagonaux, 4 % de remplissage) :
+   un simple decalage l aurait sorti de l ecran au lieu de le degager. */
+.deco-vent-bas {
+  left: -3%; bottom: -5%;
+  width: clamp(150px, 19vw, 380px); aspect-ratio: 450 / 365;
+  --deco-src: var(--img-vent-bas);
+  --deco-delai: .15s;
+  -webkit-mask-image: linear-gradient(to top right, #000 34%, transparent 70%);
+          mask-image: linear-gradient(to top right, #000 34%, transparent 70%);
+}
+/* Le vent est le seul decor assez grand pour entrer dans la colonne de
+   texte : a 1920 px de large il s etendait jusqu a x=449 alors que le
+   paragraphe commence a x=280, et ses traits passaient derriere les
+   lettres — le texte paraissait barre. Le passer sous le texte ne suffit
+   pas : le fond du paragraphe est transparent, les traits restent
+   visibles entre les lettres. On le fait donc s eteindre en s eloignant
+   de son coin, ce qui evite le texte a toutes les largeurs sans avoir a
+   deviner ou il commence — et une bourrasque qui se dissipe est plus
+   juste qu une bourrasque coupee net. */
+.deco-vent-haut {
+  -webkit-mask-image: linear-gradient(to bottom, #000 45%, rgba(0,0,0,.35) 75%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 45%, rgba(0,0,0,.35) 75%, transparent 100%);
+}
+/* Le souffle etait calibre sur 7 px, d apres une mesure de 2 px/s prise
+   sur 2 secondes de video — donc une borne basse, pas le mouvement reel :
+   la fenetre exploitable ne couvre pas un cycle. Meme erreur que pour les
+   feuilles. Amplitudes portees a une trentaine de pixels. */
+.deco-vent-haut::before {
+  --phase: -3s;
+  animation: souffle 15s linear infinite;
+  will-change: transform;
+  --sx: 20px; --sy: 13px;
+}
+.deco-vent-bas::before {
+  --phase: -1s;
+  animation: souffle 17s linear infinite;
+  will-change: transform;
+  --sx: 18px; --sy: 12px;
+}
+
+/* Trajectoire fermée, parcourue à vitesse constante.
+
+   L'ancienne version faisait un aller-retour entre deux images-clés avec
+   `ease-in-out` : le mouvement s'arrêtait net à 0 %, 50 % et 100 %, soit
+   trois points morts par cycle — d'où la saccade. Ici l'élément décrit une
+   ellipse en huit points, sans jamais s'immobiliser : c'est le `linear`
+   qui donne la fluidité, pas un assouplissement supplémentaire.
+
+   Le `scale()` a aussi disparu. Redimensionner un élément qui porte une
+   image de fond oblige le navigateur à la re-rasteriser à chaque image,
+   alors qu'une simple translation se règle sur le GPU. C'est la raison
+   pour laquelle les feuilles, qui ne font que se translater et pivoter,
+   paraissaient plus fluides que le vent.
+
+   --sx et --sy sont les DEMI-AXES de l'ellipse (0,707 = cos 45°). */
+@keyframes souffle {
+  0%     { transform: translate3d(var(--sx), 0, 0); }
+  12.5%  { transform: translate3d(calc(var(--sx) * .707), calc(var(--sy) * .707), 0); }
+  25%    { transform: translate3d(0, var(--sy), 0); }
+  37.5%  { transform: translate3d(calc(var(--sx) * -.707), calc(var(--sy) * .707), 0); }
+  50%    { transform: translate3d(calc(var(--sx) * -1), 0, 0); }
+  62.5%  { transform: translate3d(calc(var(--sx) * -.707), calc(var(--sy) * -.707), 0); }
+  75%    { transform: translate3d(0, calc(var(--sy) * -1), 0); }
+  87.5%  { transform: translate3d(calc(var(--sx) * .707), calc(var(--sy) * -.707), 0); }
+  100%   { transform: translate3d(var(--sx), 0, 0); }
+}
+
+/* --- la pagode : un dessin posé sur la scène, qui flotte doucement --- */
+.deco-pagode {
+  right: 1.3vw; bottom: -14px;
+  width: clamp(130px, 16.4vw, 315px); aspect-ratio: 315 / 300;
+  --deco-src: var(--img-pagode);
+  --deco-delai: .3s;
+}
+/* Un batiment ne derive pas de cote : son mouvement est surtout vertical,
+   ce qui donne un dessin qui flotte plutot qu un decor qui glisse. */
+.deco-pagode::before {
+  --phase: -8s;
+  animation: souffle 13s linear infinite;
+  will-change: transform;
+  --sx: 9px; --sy: 14px;
+}
+
+/* --- le papillon : un vol saccadé, jamais deux fois pareil --- */
+.deco-papillon {
+  right: 7.8vw; top: 27%;
+  width: clamp(50px, 6.25vw, 120px); aspect-ratio: 120 / 110;
+  --deco-src: var(--img-papillon);
+  --deco-delai: 1.15s;
+}
+.deco-papillon::before {
+  animation: vol-papillon 15s ease-in-out infinite;
+  --phase: -5s;
+}
+
+@keyframes vol-papillon {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  20%  { transform: translate3d(-7px, -9px, 0) rotate(-5deg); }
+  40%  { transform: translate3d(3px, -15px, 0) rotate(4deg); }
+  60%  { transform: translate3d(9px, -6px, 0) rotate(6deg); }
+  80%  { transform: translate3d(2px, 4px, 0) rotate(-3deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+
+/* --- les oiseaux : une lente dérive, chacun à son rythme --- */
+.deco-oiseau { --deco-opacite: .9; }
+.deco-oiseau::before { animation: souffle var(--duree, 18s) linear infinite; }
+
+.deco-oiseau-1 { left: 28.6%; top:  9.7%; width: clamp(28px, 3.23vw, 62px); aspect-ratio: 62 / 32; --deco-src: var(--img-oiseau-1); --deco-delai: .6s; --duree: 17s; --sx:  13px; --sy:  8px; --phase:  -4s; }
+.deco-oiseau-2 { left: 32.5%; top:  6.9%; width: clamp(25px, 2.81vw, 54px); aspect-ratio: 54 / 30; --deco-src: var(--img-oiseau-2); --deco-delai: .7s; --duree: 21s; --sx:  11px; --sy:  7px; --phase: -13s; }
+.deco-oiseau-3 { left: 23%;   top: 11%; width: clamp(20px, 2.08vw, 40px); aspect-ratio: 40 / 26; --deco-src: var(--img-oiseau-3); --deco-delai: .8s; --duree: 15s; --sx:  14px; --sy:  9px; --phase:  -7s; }
+.deco-oiseau-4 { left: 70.2%; top: 21.8%; width: clamp(25px, 2.86vw, 55px); aspect-ratio: 55 / 30; --deco-src: var(--img-oiseau-4); --deco-delai: .65s; --duree: 19s; --sx:  12px; --sy:  8px; --phase: -16s; }
+.deco-oiseau-5 { left: 73.4%; top: 27.0%; width: clamp(21px, 2.19vw, 42px); aspect-ratio: 42 / 26; --deco-src: var(--img-oiseau-5); --deco-delai: .75s; --duree: 22s; --sx:  11px; --sy:  7px; --phase:  -2s; }
+.deco-oiseau-6 { left: 80.7%; top: 38.9%; width: clamp(19px, 1.98vw, 38px); aspect-ratio: 38 / 25; --deco-src: var(--img-oiseau-6); --deco-delai: .85s; --duree: 16s; --sx:  13px; --sy:  8px; --phase: -10s; }
+.deco-oiseau-7 { left: 67.3%; top: 43.1%; width: clamp(18px, 1.67vw, 32px); aspect-ratio: 32 / 20; --deco-src: var(--img-oiseau-7); --deco-delai: .9s; --duree: 20s; --sx:  12px; --sy:  8px; --phase:  -6s; }
+
+/* Sur mobile la scène est plus étroite : on garde le vent et la pagode,
+   qui structurent les coins, et seulement trois oiseaux pour ne pas
+   surcharger. Le papillon reste, c'est le détail le plus vivant. */
+@media (max-width: 760px) {
+  .deco-oiseau-2,
+  .deco-oiseau-5,
+  .deco-oiseau-6,
+  .deco-oiseau-7 { display: none; }
+  /* En colonne unique, .hero-side (2026 / ANTANANARIVO) descend en bas du
+     hero — exactement la ou vivent la pagode et le vent bas. On reserve
+     donc une bande sous le texte pour ces deux decors, au lieu de les
+     supprimer : ce sont eux qui posent le coin bas de la scene. */
+  .hero { padding-bottom: 165px; }
+  /* Le souffle du haut passe DERRIERE le cercle en version mobile.
+     Sur 375 px le cercle occupe la bande 64-311 : il ne reste que 64 px a
+     sa droite, alors que le souffle en fait 195. Impossible de les separer
+     horizontalement — dessine par-dessus (z-index 2 contre 1), il barrait
+     11 % de la photo. Repasse dessous, il en sort naturellement par le
+     coin, ce qui est le rendu voulu. Il reste au-dessus du motif de fond,
+     qui est a -1. */
+  .deco-vent-haut { width: 52vw; z-index: 0; }
+  .deco-vent-bas  { width: 44vw; }
+  .deco-pagode    { width: 34vw; }
+  .deco-papillon  { right: 6vw; width: 13vw; }
+}
+
+/* Réglage système « moins d'animations » : les décors restent affichés,
+   mais figés. */
+@media (prefers-reduced-motion: reduce) {
+  .deco { opacity: var(--deco-opacite, 1); animation: none; }
+  .deco::before { animation: none; }
+}
+
+/* ============================================================
+   OUVERTURE DE LA PAGE 1
+   ------------------------------------------------------------
+   Relevé image par image sur la vidéo de référence, qui contient un
+   rechargement à t=1,35 s. En mesurant l'encre de chaque zone au fil du
+   temps, on obtient l'ordre et la durée réels :
+
+     +0,10 → +0,85 s   le motif de vagues
+     +0,10 → +0,65 s   l'en-tête
+     +0,10 → +0,55 s   le cercle et la photo (fondu + échelle 0,86 → 1)
+     +0,60 → +1,15 s   ICHI-GO ICHI-E puis le nom
+     +0,70 → +1,25 s   le rôle et le paragraphe
+     +0,80 → +1,30 s   le bloc 2026 / ANTANANARIVO
+     +1,00 → +1,40 s   les boutons
+     +0,90 → +1,45 s   les feuilles et les décors
+
+   Soit une ouverture d'environ 1,5 s. Le cercle part le premier, seul sur
+   une page encore blanche — c'est ce qui donne son caractère à la scène.
+   Rien ne glisse de très loin : 10 à 16 px, jamais 40.
+   ============================================================ */
+@keyframes hero-entree {
+  from { opacity: 0; translate: var(--dx, 0px) var(--dy, 10px); filter: blur(2px); }
+  to   { opacity: 1; translate: 0 0; filter: blur(0); }
+}
+
+/* Le cercle grandit en apparaissant : mesuré 281 px de diamètre à t=1,50 s
+   puis 340 px une fois posé, soit 0,83 → 1. `scale` et non `transform`,
+   pour ne pas écraser le `translate: -50% -50%` qui le centre. */
+@keyframes photo-monte {
+  from { opacity: 0; translate: 0 74px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+@keyframes hero-cercle {
+  from { opacity: 0; scale: .86; }
+  to   { opacity: 1; scale: 1; }
+}
+
+.hero .hero-waves { animation: hero-entree .75s ease-out 60ms both; --dy: 0px; }
+/* Le disque bleu grandit (0,86 -> 1), releve sur la video : 281 px de
+   diametre a t=1,50 s puis 340 px une fois pose. */
+.hero-circle::before { animation: hero-cercle .65s cubic-bezier(.22, 1, .36, 1) 80ms both; }
+/* La photo, elle, monte depuis le bas — elle ne subit plus l echelle du
+   cercle depuis que le degrade est passe sur le ::before. Elle demarre un
+   peu apres, le temps que le disque soit en place derriere elle. */
+.hero-circle::after  { animation: photo-monte .8s cubic-bezier(.22, 1, .36, 1) 260ms both; }
+.site-header      { animation: hero-entree .55s cubic-bezier(.22, 1, .36, 1) 60ms both; --dy: -8px; }
+
+.hero-copy > *,
+.hero-side {
+  animation: hero-entree .55s cubic-bezier(.22, 1, .36, 1) var(--entree) both;
+  --dx: -10px; --dy: -6px;
+}
+.hero-jp      { --entree: 560ms; }
+.hero-romaji  { --entree: 600ms; }
+.hero-copy h1 { --entree: 640ms; }
+.hero-copy .role   { --entree: 720ms; }
+.hero-copy .intro  { --entree: 780ms; }
+/* .hero-copy > * a la meme specificite que .scroll-cue (0,1,0) mais arrive
+   plus loin : sa declaration `animation` ecrasait purement et simplement le
+   balancement defini plus haut. Les deux sont donc redeclarees ensemble ici.
+   Elles ne se genent pas — l entree joue sur opacity/translate/filter, le
+   balancement sur transform — et le balancement demarre quand l entree
+   finit. */
+.scroll-cue {
+  --entree: 900ms;
+  animation:
+    hero-entree .55s cubic-bezier(.22, 1, .36, 1) var(--entree) both,
+    bob 1.8s ease-in-out calc(var(--entree) + .55s) infinite;
+}
+.hero-actions      { --entree: 980ms; }
+.hero-side { --entree: 820ms; --dx: 10px; }
+
+/* Les décors arrivent en dernier, comme les feuilles, et enchaînent
+   directement sur leur mouvement permanent. */
+.deco { animation-delay: var(--deco-delai, 0s); }
+/* Delai NEGATIF : chaque decor commence deja engage dans son cycle. Avec
+   un delai positif ils partaient tous de leur position de repos au meme
+   instant, exactement comme les feuilles avant correction. */
+.deco::before { animation-delay: var(--phase, -6s); }
+
+/* Réglage système « moins d'animations » : la page s'affiche d'un coup,
+   sans mouvement, mais rien ne disparaît. */
+@media (prefers-reduced-motion: reduce) {
+  /* Tout s affiche d un coup, rien ne bouge — mais rien ne disparait non
+     plus. On ne touche pas a `translate` du cercle : c est lui qui le
+     centre, et sa valeur change en version mobile. */
+  .hero .hero-waves,
+  .site-header,
+  .hero-copy > *,
+  .hero-side {
+    animation: none;
+    opacity: 1;
+    translate: none;
+    filter: none;
+  }
+  .hero-circle::before,
+  .hero-circle::after { animation: none; opacity: 1; scale: 1; translate: none; }
+  .leaf { animation: none; opacity: 1; translate: none; }
+  .reveal { opacity: 1; transform: none; filter: none; transition: none; }
 }
